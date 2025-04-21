@@ -3,14 +3,14 @@ import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from './context/ThemeContext';
 import { useTheme } from './context/ThemeContext';
-import { Container, Box, Button, AppBar, Toolbar, Typography, IconButton, CircularProgress, Paper } from '@mui/material';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { Container, Box, Button, Typography, CircularProgress, Paper } from '@mui/material';
+
 import FileUpload from './components/FileUpload';
 import FileList from './components/FileList';
 import ResultsTable from './components/ResultsTable';
 import Layout from './components/Layout';
 import { compareDocuments, checkHealth } from './services/api';
+import CompareIcon from '@mui/icons-material/Compare';
 
 const AppContent = () => {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -87,6 +87,16 @@ const AppContent = () => {
     setError(null);
   };
 
+  const handleClearTable = () => {
+    console.log('App: Clearing all results');
+    setResults([]);
+  };
+
+  const handleDeleteRow = (index) => {
+    console.log('App: Deleting row at index', index);
+    setResults(prevResults => prevResults.filter((_, i) => i !== index));
+  };
+
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
@@ -104,14 +114,14 @@ const AppContent = () => {
 
           {files.length > 0 && (
             <>
-              <FileList files={files} onRemoveFile={removeFile} />
+              <FileList files={files} onRemoveFile={removeFile} onClearAll={clearAll} />
               
               <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
                 <Button
                   variant="contained"
                   onClick={handleCompare}
                   disabled={files.length < 2 || isLoading}
-                  startIcon={isLoading ? <CircularProgress size={20} /> : null}
+                  startIcon={isLoading ? <CircularProgress size={20} /> : <CompareIcon />}
                   sx={{ minWidth: 200 }}
                 >
                   {isLoading ? 'Comparing...' : 'Compare Documents'}
@@ -127,7 +137,7 @@ const AppContent = () => {
             </>
           )}
 
-          {results.length > 0 && <ResultsTable results={results} />}
+          {results.length > 0 && <ResultsTable results={results} onClearTable={handleClearTable} onDeleteRow={handleDeleteRow} />}
         </Container>
       </Layout>
     </MuiThemeProvider>
