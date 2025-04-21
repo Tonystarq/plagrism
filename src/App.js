@@ -9,6 +9,7 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import FileUpload from './components/FileUpload';
 import FileList from './components/FileList';
 import ResultsTable from './components/ResultsTable';
+import Layout from './components/Layout';
 import { compareDocuments, checkHealth } from './services/api';
 
 const AppContent = () => {
@@ -89,53 +90,46 @@ const AppContent = () => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="static" color="default">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Document Similarity Checker
-          </Typography>
-          <IconButton onClick={toggleTheme} color="inherit">
-            {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
-      <Container maxWidth="lg" className="mt-4">
-        {apiStatus && (
-          <Paper className="p-2 mb-4" sx={{ bgcolor: 'success.light', color: 'success.contrastText' }}>
-            <Typography>API Status: {apiStatus.message}</Typography>
-          </Paper>
-        )}
-
-        {error && (
-          <Paper className="p-2 mb-4" sx={{ bgcolor: 'error.light', color: 'error.contrastText' }}>
-            <Typography>{error}</Typography>
-          </Paper>
-        )}
-
-        <FileUpload onFilesUploaded={setFiles} />
-
-        {files.length > 0 && (
-          <>
-            <FileList files={files} onRemoveFile={removeFile} />
-            
-            <Box className="flex gap-2 mt-4">
-              <Button
-                variant="contained"
-                onClick={handleCompare}
-                disabled={files.length < 2 || isLoading}
-              >
-                {isLoading ? <CircularProgress size={24} /> : 'Compare Documents'}
-              </Button>
-              <Button variant="outlined" onClick={clearAll}>
-                Clear All
-              </Button>
+      <Layout isDarkMode={isDarkMode} toggleTheme={toggleTheme} apiStatus={apiStatus}>
+        <Container maxWidth="lg">
+          {error && (
+            <Box sx={{ mb: 4 }}>
+              <Paper elevation={3} sx={{ p: 2, bgcolor: 'error.light', color: 'error.contrastText' }}>
+                <Typography>{error}</Typography>
+              </Paper>
             </Box>
-          </>
-        )}
+          )}
 
-        {results.length > 0 && <ResultsTable results={results} />}
-      </Container>
+          <FileUpload onFilesUploaded={setFiles} isLoading={isLoading} />
+
+          {files.length > 0 && (
+            <>
+              <FileList files={files} onRemoveFile={removeFile} />
+              
+              <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+                <Button
+                  variant="contained"
+                  onClick={handleCompare}
+                  disabled={files.length < 2 || isLoading}
+                  startIcon={isLoading ? <CircularProgress size={20} /> : null}
+                  sx={{ minWidth: 200 }}
+                >
+                  {isLoading ? 'Comparing...' : 'Compare Documents'}
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={clearAll}
+                  disabled={isLoading}
+                >
+                  Clear All
+                </Button>
+              </Box>
+            </>
+          )}
+
+          {results.length > 0 && <ResultsTable results={results} />}
+        </Container>
+      </Layout>
     </MuiThemeProvider>
   );
 };

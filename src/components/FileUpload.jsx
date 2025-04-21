@@ -1,8 +1,16 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Paper, Typography } from '@mui/material';
+import {
+  Paper,
+  Typography,
+  Box,
+  Button,
+  CircularProgress,
+  Alert,
+} from '@mui/material';
+import { CloudUpload as UploadIcon } from '@mui/icons-material';
 
-const FileUpload = ({ onFilesUploaded }) => {
+const FileUpload = ({ onFilesUploaded, isLoading }) => {
   const onDrop = (acceptedFiles) => {
     console.log('FileUpload: Files dropped', acceptedFiles);
     const newFiles = acceptedFiles.map(file => ({
@@ -34,25 +42,59 @@ const FileUpload = ({ onFilesUploaded }) => {
       'application/pdf': ['.pdf'],
       'application/msword': ['.doc'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
-    }
+    },
+    disabled: isLoading
   });
 
   return (
-    <Paper
-      {...getRootProps()}
-      className="p-8 text-center cursor-pointer border-2 border-dashed rounded-lg"
-      sx={{
-        borderColor: isDragActive ? 'primary.main' : 'text.secondary',
-        bgcolor: isDragActive ? 'action.hover' : 'background.paper',
-      }}
-    >
-      <input {...getInputProps()} />
-      {isDragActive ? (
-        <Typography>Drop the files here ...</Typography>
-      ) : (
-        <Typography>Drag & drop files here, or click to select files</Typography>
-      )}
-    </Paper>
+    <Box id="upload" sx={{ mb: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        Upload Documents
+      </Typography>
+      <Paper
+        {...getRootProps()}
+        sx={{
+          p: 4,
+          textAlign: 'center',
+          cursor: isLoading ? 'not-allowed' : 'pointer',
+          border: '2px dashed',
+          borderColor: isDragActive ? 'primary.main' : 'text.secondary',
+          bgcolor: isDragActive ? 'action.hover' : 'background.paper',
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            borderColor: 'primary.main',
+            bgcolor: 'action.hover',
+          },
+        }}
+      >
+        <input {...getInputProps()} />
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <UploadIcon sx={{ fontSize: 48, color: 'primary.main' }} />
+              {isDragActive ? (
+                <Typography variant="h6">Drop the files here ...</Typography>
+              ) : (
+                <>
+                  <Typography variant="h6">Drag & drop files here</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    or
+                  </Typography>
+                  <Button variant="contained" component="span">
+                    Select Files
+                  </Button>
+                </>
+              )}
+            </>
+          )}
+        </Box>
+      </Paper>
+      <Alert severity="info" sx={{ mt: 2 }}>
+        Supported file types: .txt, .pdf, .doc, .docx
+      </Alert>
+    </Box>
   );
 };
 
