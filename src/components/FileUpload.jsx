@@ -18,7 +18,6 @@ import {
 
 const FileUpload = ({ onFilesUploaded, isLoading }) => {
   const onDrop = (acceptedFiles) => {
-    console.log('FileUpload: Files dropped', acceptedFiles);
     const newFiles = acceptedFiles.map(file => ({
       file,
       name: file.name,
@@ -30,7 +29,6 @@ const FileUpload = ({ onFilesUploaded, isLoading }) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = e.target.result;
-        console.log('FileUpload: File content read', { name: fileObj.name, contentLength: content.length });
         onFilesUploaded(prev => prev.map(f => 
           f.file === fileObj.file ? { ...f, content } : f
         ));

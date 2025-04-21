@@ -33,9 +33,7 @@ const AppContent = () => {
       try {
         const status = await checkHealth();
         setApiStatus(status);
-        console.log('App: API status', status);
       } catch (error) {
-        console.error('App: Failed to check API health', error);
         setApiStatus(null);
       }
     };
@@ -44,7 +42,6 @@ const AppContent = () => {
   }, []);
 
   const handleCompare = async () => {
-    console.log('App: Starting document comparison');
     setIsLoading(true);
     setError(null);
     const newResults = [];
@@ -75,10 +72,8 @@ const AppContent = () => {
         }
       }
       
-      console.log('App: Comparison completed', newResults);
       setResults(newResults);
     } catch (error) {
-      console.error('App: Error during comparison', error);
       setError(error.message || 'An error occurred while comparing documents');
     } finally {
       setIsLoading(false);
@@ -87,24 +82,20 @@ const AppContent = () => {
   };
 
   const removeFile = (index) => {
-    console.log('App: Removing file at index', index);
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const clearAll = () => {
-    console.log('App: Clearing all files and results');
     setFiles([]);
     setResults([]);
     setError(null);
   };
 
   const handleClearTable = () => {
-    console.log('App: Clearing all results');
     setResults([]);
   };
 
   const handleDeleteRow = (index) => {
-    console.log('App: Deleting row at index', index);
     setResults(prevResults => prevResults.filter((_, i) => i !== index));
   };
 

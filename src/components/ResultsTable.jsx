@@ -24,7 +24,6 @@ import {
 } from '@mui/icons-material';
 
 const ResultsTable = ({ results, onClearTable, onDeleteRow }) => {
-  console.log('ResultsTable: Rendering results', results);
 
   const getSimilarityColor = (score) => {
     const normalizedScore = parseFloat(score);

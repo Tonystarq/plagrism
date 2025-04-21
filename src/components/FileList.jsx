@@ -23,7 +23,6 @@ import {
 } from '@mui/icons-material';
 
 const FileList = ({ files, onRemoveFile, onClearAll, isLoading }) => {
-  console.log('FileList: Rendering with files', files);
 
   const getFileType = (fileName) => {
     const extension = fileName.split('.').pop().toLowerCase();
@@ -172,7 +171,6 @@ const FileList = ({ files, onRemoveFile, onClearAll, isLoading }) => {
                   <Tooltip title={isLoading ? "Cannot delete file while comparing" : "Remove file"}>
                     <IconButton
                       onClick={() => {
-                        console.log('FileList: Removing file', file.name);
                         onRemoveFile(index);
                       }}
                       color="error"
