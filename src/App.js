@@ -113,28 +113,75 @@ const AppContent = () => {
           <FileUpload onFilesUploaded={setFiles} isLoading={isLoading} />
 
           {files.length > 0 && (
-            <>
+            <Box sx={{ 
+              mt: 4,
+              p: 3,
+              borderRadius: 4,
+              border: '2px solid',
+              borderColor: (theme) => theme.palette.divider,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderColor: 'primary.main',
+                boxShadow: (theme) => `0 0 20px ${theme.palette.primary.main}20`,
+              }
+            }}>
               <FileList files={files} onRemoveFile={removeFile} onClearAll={clearAll} />
               
-              <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+              <Box sx={{ 
+                display: 'flex',
+                justifyContent: 'center',
+                mt: 3,
+                pt: 3,
+                borderTop: '1px solid',
+                borderColor: (theme) => theme.palette.divider,
+              }}>
                 <Button
                   variant="contained"
+                  color="primary"
                   onClick={handleCompare}
-                  disabled={files.length < 2 || isLoading}
+                  disabled={isLoading || files.length < 2}
                   startIcon={isLoading ? <CircularProgress size={20} /> : <CompareIcon />}
-                  sx={{ minWidth: 200 }}
+                  sx={{
+                    minWidth: 200,
+                    py: 1.5,
+                    px: 4,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontSize: '1.1rem',
+                    fontWeight: 'bold',
+                    boxShadow: (theme) => `0 4px 8px ${theme.palette.primary.main}40`,
+                    transition: 'all 0.3s ease',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: (theme) => `0 6px 12px ${theme.palette.primary.main}60`,
+                      '&::before': {
+                        transform: 'translateX(100%)',
+                      },
+                    },
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent)',
+                      transform: 'translateX(-100%)',
+                      transition: 'transform 0.6s ease',
+                    },
+                    '&:disabled': {
+                      bgcolor: 'grey.300',
+                      color: 'grey.500',
+                      boxShadow: 'none',
+                    }
+                  }}
                 >
                   {isLoading ? 'Comparing...' : 'Compare Documents'}
                 </Button>
-                <Button
-                  variant="outlined"
-                  onClick={clearAll}
-                  disabled={isLoading}
-                >
-                  Clear All
-                </Button>
               </Box>
-            </>
+            </Box>
           )}
 
           {results.length > 0 && <ResultsTable results={results} onClearTable={handleClearTable} onDeleteRow={handleDeleteRow} />}
