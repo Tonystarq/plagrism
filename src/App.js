@@ -3,7 +3,7 @@ import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from './context/ThemeContext';
 import { useTheme } from './context/ThemeContext';
-import { Container, Box, Button, Typography, CircularProgress, Paper } from '@mui/material';
+import { Container, Box, Button, Typography, CircularProgress, Paper, LinearProgress } from '@mui/material';
 
 import FileUpload from './components/FileUpload';
 import FileList from './components/FileList';
@@ -19,6 +19,8 @@ const AppContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiStatus, setApiStatus] = useState(null);
+  const [comparisonProgress, setComparisonProgress] = useState(0);
+  const [totalComparisons, setTotalComparisons] = useState(0);
 
   const theme = createTheme({
     palette: {
@@ -47,6 +49,11 @@ const AppContent = () => {
     setError(null);
     const newResults = [];
     
+    // Calculate total number of comparisons needed
+    const total = (files.length * (files.length - 1)) / 2;
+    setTotalComparisons(total);
+    setComparisonProgress(0);
+    
     try {
       for (let i = 0; i < files.length; i++) {
         for (let j = i + 1; j < files.length; j++) {
@@ -62,6 +69,9 @@ const AppContent = () => {
           } else {
             throw new Error(response.message);
           }
+          
+          // Update progress
+          setComparisonProgress(prev => prev + 1);
         }
       }
       
@@ -72,6 +82,7 @@ const AppContent = () => {
       setError(error.message || 'An error occurred while comparing documents');
     } finally {
       setIsLoading(false);
+      setComparisonProgress(0);
     }
   };
 
@@ -129,12 +140,39 @@ const AppContent = () => {
               
               <Box sx={{ 
                 display: 'flex',
-                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center',
                 mt: 3,
                 pt: 3,
                 borderTop: '1px solid',
                 borderColor: (theme) => theme.palette.divider,
+                gap: 2
               }}>
+                {isLoading && (
+                  <Box sx={{ width: '100%', mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Comparing Documents...
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {Math.round((comparisonProgress / totalComparisons) * 100)}%
+                      </Typography>
+                    </Box>
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={(comparisonProgress / totalComparisons) * 100}
+                      sx={{
+                        height: 8,
+                        borderRadius: 4,
+                        bgcolor: (theme) => theme.palette.grey[200],
+                        '& .MuiLinearProgress-bar': {
+                          borderRadius: 4,
+                          bgcolor: (theme) => theme.palette.primary.main,
+                        }
+                      }}
+                    />
+                  </Box>
+                )}
                 <Button
                   variant="contained"
                   color="primary"
