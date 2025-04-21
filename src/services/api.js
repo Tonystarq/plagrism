@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://plagrism-backend-1.onrender.com';
 
 export const compareDocuments = async (file1, file2) => {
   console.log('API: Comparing documents', { file1: file1.name, file2: file2.name });

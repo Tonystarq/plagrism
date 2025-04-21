@@ -136,7 +136,12 @@ const AppContent = () => {
                 boxShadow: (theme) => `0 0 20px ${theme.palette.primary.main}20`,
               }
             }}>
-              <FileList files={files} onRemoveFile={removeFile} onClearAll={clearAll} />
+              <FileList 
+                files={files} 
+                onRemoveFile={removeFile} 
+                onClearAll={clearAll} 
+                isLoading={isLoading}
+              />
               
               <Box sx={{ 
                 display: 'flex',

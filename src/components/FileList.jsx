@@ -22,7 +22,7 @@ import {
   TextSnippet as TxtIcon,
 } from '@mui/icons-material';
 
-const FileList = ({ files, onRemoveFile, onClearAll }) => {
+const FileList = ({ files, onRemoveFile, onClearAll, isLoading }) => {
   console.log('FileList: Rendering with files', files);
 
   const getFileType = (fileName) => {
@@ -72,13 +72,14 @@ const FileList = ({ files, onRemoveFile, onClearAll }) => {
           Uploaded Files
         </Typography>
         {files.length > 0 && (
-          <Tooltip title="Clear all files">
+          <Tooltip title={isLoading ? "Cannot clear files while comparing" : "Clear all files"}>
             <Button
               variant="outlined"
               color="error"
               startIcon={<ClearAllIcon />}
               onClick={onClearAll}
               size="small"
+              disabled={isLoading}
               sx={{
                 borderRadius: 2,
                 textTransform: 'none',
@@ -86,6 +87,11 @@ const FileList = ({ files, onRemoveFile, onClearAll }) => {
                 '&:hover': {
                   transform: 'translateY(-2px)',
                   boxShadow: (theme) => `0 4px 8px ${theme.palette.error.main}40`,
+                },
+                '&:disabled': {
+                  bgcolor: 'grey.300',
+                  color: 'grey.500',
+                  boxShadow: 'none',
                 }
               }}
             >
@@ -163,7 +169,7 @@ const FileList = ({ files, onRemoveFile, onClearAll }) => {
                   />
                 </TableCell>
                 <TableCell align="right">
-                  <Tooltip title="Remove file">
+                  <Tooltip title={isLoading ? "Cannot delete file while comparing" : "Remove file"}>
                     <IconButton
                       onClick={() => {
                         console.log('FileList: Removing file', file.name);
@@ -171,11 +177,16 @@ const FileList = ({ files, onRemoveFile, onClearAll }) => {
                       }}
                       color="error"
                       size="small"
+                      disabled={isLoading}
                       sx={{
                         transition: 'all 0.3s ease',
                         '&:hover': {
                           transform: 'scale(1.2)',
                           backgroundColor: (theme) => theme.palette.error.light + '20',
+                        },
+                        '&:disabled': {
+                          bgcolor: 'grey.300',
+                          color: 'grey.500',
                         }
                       }}
                     >
